@@ -143,7 +143,7 @@ func (i *Ipvs) Save() error {
 		}
 		i.Services = append(i.Services, service)
 	}
-	return nil
+	return i.Services
 }
 
 func (i Ipvs) StartDaemon() (error, error) {
