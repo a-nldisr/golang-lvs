@@ -118,11 +118,39 @@ func (i *Ipvs) Restore(services []Service) error {
 	return nil
 }
 
-// save reads the applied ipvsadm rules from the host and saves them as i.Services
+// Save reads the applied ipvsadm rules from the host and saves them as i.Services
 func (i *Ipvs) Save() error {
 	out, err := backendRun([]string{"ipvsadm", "-S", "-n"})
 	if err != nil {
 		return err
+	}
+
+	i.Services = make([]Service, 0, 0)
+	serviceStrings := strings.Split(string(out), "-A")
+	for j := range serviceStrings {
+		if serviceStrings[j] == "" {
+			continue
+		}
+		serverStrings := strings.Split(serviceStrings[j], "-a")
+		serviceString := serverStrings[0]
+		serverStrings = serverStrings[1:]
+		// fmt.Println("Service: ", serviceString)
+		service := parseService(serviceString)
+		for k := range serverStrings {
+			// fmt.Println("Server: ", serverStrings[j])
+			server := parseServer(serverStrings[k])
+			service.Servers = append(service.Servers, server)
+		}
+		i.Services = append(i.Services, service)
+	}
+	return i.Services
+}
+
+// List save function
+func (i *Ipvs) List() []Service {
+	out, err := backendRun([]string{"ipvsadm", "-S", "-n"})
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	i.Services = make([]Service, 0, 0)
