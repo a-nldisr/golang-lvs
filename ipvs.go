@@ -147,7 +147,7 @@ func (i *Ipvs) Save() error {
 }
 
 // List save function
-func (i *Ipvs) List() []Service {
+func (i *Ipvs) List() ([]Service, error) {
 	out, err := backendRun([]string{"ipvsadm", "-S", "-n"})
 	if err != nil {
 		fmt.Println(err)
@@ -171,7 +171,7 @@ func (i *Ipvs) List() []Service {
 		}
 		i.Services = append(i.Services, service)
 	}
-	return i.Services
+	return i.Services, err
 }
 
 func (i Ipvs) StartDaemon() (error, error) {
