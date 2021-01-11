@@ -143,7 +143,7 @@ func (i *Ipvs) Save() error {
 		}
 		i.Services = append(i.Services, service)
 	}
-	return i.Services
+	return nil
 }
 
 // List save function
