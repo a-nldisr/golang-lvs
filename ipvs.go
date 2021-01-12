@@ -149,6 +149,7 @@ func (i *Ipvs) Save() error {
 // List save function
 func (i *Ipvs) List() []Service {
 	out, err := backendRun([]string{"ipvsadm", "-S", "-n"})
+	fmt.Println(out)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -174,6 +175,7 @@ func (i *Ipvs) List() []Service {
 	return i.Services
 }
 
+// StartDaemon used to start Daemon
 func (i Ipvs) StartDaemon() (error, error) {
 	if i.MulticastInterface != "" {
 		var err1, err2 error
